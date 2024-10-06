@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Catalog</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#courses">Courses</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="home">
+        <h1>Welcome to the Course Catalog</h1>
+        <p>Explore our wide range of courses and start learning today!</p>
+    </div>
+
+    <div id="courses">
+        <aside>
+            <h2>Filter Courses</h2>
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate">
+
+            <label for="duration">Duration:</label>
+            <select id="duration">
+                <option value="">Select duration</option>
+                <option value="4 weeks">4 weeks</option>
+                <option value="6 weeks">6 weeks</option>
+                <option value="8 weeks">8 weeks</option>
+                <option value="10 weeks">10 weeks</option>
+                <option value="12 weeks">12 weeks</option>
+            </select>
+
+            <label for="category">Course Category:</label>
+            <select id="category">
+                <option value="">Select category</option>
+                <option value="Programming">Programming</option>
+                <option value="Web Development">Web Development</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Design">Design</option>
+                <option value="Marketing">Marketing</option>
+            </select>
+        </aside>
+
+        <main id="course-list">
+            <!-- Course items will be dynamically loaded here -->
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const courseList = document.getElementById('course-list');
+
+            // Load courses from JSON file
+            fetch('courses.json')
+                .then(response => response.json())
+                .then(courses => {
+                    courses.forEach(course => {
+                        const courseItem = document.createElement('div');
+                        courseItem.classList.add('course-item');
+                        courseItem.innerHTML = `
+                            <h3>${course.courseName}</h3>
+                            <p><strong>Start Date:</strong> ${course.startDate}</p>
+                            <p><strong>Duration:</strong> ${course.duration}</p>
+                            <p><strong>Category:</strong> ${course.category}</p>
+                            <button class="expand-btn">Expand Syllabus</button>
+                            <ul class="syllabus" style="display:none;">
+                                ${course.syllabus.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        `;
+                        courseList.appendChild(courseItem);
+                    });
+
+                    // Add event listeners to expand buttons
+                    document.querySelectorAll('.expand-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const syllabus = this.nextElementSibling;
+                            syllabus.style.display = syllabus.style.display === 'none' ? 'block' : 'none';
+                        });
+                    });
+                });
+        });
+    </script>
+</body>
+</html>
